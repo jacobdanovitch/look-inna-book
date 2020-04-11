@@ -19,7 +19,6 @@ CREATE TABLE ORDER( /* Store multiple of these for each book in the order. Prima
     bookASIN char(10) primary key,
     quantity integer,
     orderID text primary key,
-    sellerID text,
     userID text,
 );
 
@@ -29,7 +28,7 @@ CREATE TABLE SHIPMENT(
 );
 
 
-CREATE TABLE PAYMENT_INFO(
+CREATE TABLE PAYMENT_INFO( /* TODO: IMPLEMENT*/
     creditCardNumber
 );
 
