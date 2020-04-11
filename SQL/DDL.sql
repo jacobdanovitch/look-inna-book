@@ -6,13 +6,13 @@ CREATE TABLE author (
 
 CREATE TABLE book (
   bookID serial primary key, /* Reasoning behind this is we can have multiple of the same book in the database*/
-  bookASIN char(10), 
+  bookASIN char(10), /* ASIN are garunteed to be size 10*/
   bookTitle text,
   bookGenre text,
   bookPages integer,
   bookPrice numeric(6, 2),
   percentageTaken numeric(3,2), /* Todo limit of 100 percent*/
-  orderId text /* Show non-sold books by filtering for nulls, sold-books can be queried by their orderID*/
+  orderId integer /* Show non-sold books by filtering for nulls, sold-books can be queried by their orderID*/
 );
 
 
@@ -28,18 +28,12 @@ CREATE TABLE user( /* needs work for later*/
 );
 
 CREATE TABLE ORDER( /* TODO: Figure out logic behind this*/ 
-
-
-
-);
-
-
-CREATE TABLE STORE( /* Many to many between store and user*/
-
-
+    userID references user(userID),
+    sellerID refrences user(userID),
+    orderID serial primary key,
+    trackingURL text,
 
 );
-
 
 
 
