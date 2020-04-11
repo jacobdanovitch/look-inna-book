@@ -10,8 +10,9 @@ CREATE TABLE book (
   bookTitle text,
   bookGenre text,
   bookPages integer,
-  bookPrice numeric(6, 2)
-  percentageTaken numeric(3,2) /* Todo limit of 100 percent*/
+  bookPrice numeric(6, 2),
+  percentageTaken numeric(3,2), /* Todo limit of 100 percent*/
+  orderId text /* Show non-sold books by filtering for nulls, sold-books can be queried by their orderID*/
 );
 
 
@@ -19,6 +20,24 @@ CREATE TABLE author_book ( /* Allows for many to many relation between authors a
   authorID integer references author(authorID) on delete cascade,
   bookID   integer references book(bookID) on delete cascade,
   constraint author_book_pkey primary key(authorID, bookID)
+);
+
+CREATE TABLE user( /* needs work for later*/
+    userID serial primary key,
+    fullName text
+);
+
+CREATE TABLE ORDER( /* TODO: Figure out logic behind this*/ 
+
+
+
+);
+
+
+CREATE TABLE STORE( /* Many to many between store and user*/
+
+
+
 );
 
 
