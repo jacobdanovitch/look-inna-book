@@ -1,26 +1,15 @@
-CREATE TABLE author (
-  authorID serial primary key,
-  authorName text,
-  unique(authorName) /* Authours should be unique, we should not have duplicate authors*/
-);
-
 CREATE TABLE book ( /* Primary key (bookASIN,sellerID) */
-  bookASIN char(10), /* ASIN are garunteed to be size 10*/
-  sellerID text, 
+  bookASIN char(10) NOT NULL UNIQUE, /* ASIN are garunteed to be size 10*/
+  sellerID text NOT NULL UNIQUE,
+  authorName text, 
   bookTitle text,
   bookPublisher text,
   bookGenre text,
   bookPages integer,
   bookPrice numeric(6, 2),
   percentageTaken numeric(3,2), /* Todo limit of 100 percent*/
-  inventory integer -- # left in stock
-  book_seller_pkey primary key(bookASIN, sellerID)
-);
-
-CREATE TABLE author_book ( /* Allows for many to many relation between authors and books*/
-  authorID integer references author(authorID) on delete cascade,
-  bookID   integer references book(bookID) on delete cascade,
-  constraint author_book_pkey primary key(authorID, bookID)
+  inventory integer, -- # left in stock
+  primary key(bookASIN, sellerID)
 );
 
 
@@ -31,7 +20,7 @@ CREATE TABLE seller( /* needs work for later*/
     fullName text
 );
 
-CREATE TABLE user( /* needs work for later*/
+CREATE TABLE buyer( /* needs work for later*/
     userID text primary key, /* Created by application side*/
     userEmail text,
     avatarURL text,
@@ -40,20 +29,20 @@ CREATE TABLE user( /* needs work for later*/
 
 
 
-CREATE TABLE order( /* Store multiple of these for each book in the order. Primary Key (ORDERID,BOOKASIN)*/ 
-    bookASIN char(10),
+CREATE TABLE book_order( /* Store multiple of these for each book in the order. Primary Key (ORDERID,BOOKASIN)*/ 
+    bookASIN char(10) NOT NULL UNIQUE,
     quantity integer,
-    orderID text,
-    userID text,
-    sellerID text,
-    book_seller_pkey primary key(bookASIN,sellerID,userID,orderID)
+    orderID text NOT NULL UNIQUE,
+    userID text NOT NULL UNIQUE,
+    sellerID text NOT NULL UNIQUE, 
+  	primary key(bookASIN,sellerID,userID,orderID)
 );
 
 
 
 CREATE TABLE shipment(
-    orderID text primary key references ORDER(orderID) on delete cascade,
-    trackingID text primary key,
+    orderID text references book_order(orderID) on delete cascade,
+    trackingID text primary key
 );
 
 
@@ -61,13 +50,13 @@ CREATE TABLE shipment(
 
 CREATE TABLE publisher( /* Needs to be finished*/
   bankingInformation text primary key,
-  bookPublisher text,
+  bookPublisher text
 );
 
 
 CREATE TABLE PhoneNumber(
   PhoneNumber text primary key,
-  bookPublisher text, /*Whoever owns the phone number*/
+  bookPublisher text /*Whoever owns the phone number*/
 );
 
 
@@ -80,7 +69,7 @@ CREATE TABLE payment_info(
 
 
 CREATE TABLE address(
-  owner_id text primary key /*Publisher/Seller/User ID*/
+  owner_id text primary key, /*Publisher/Seller/User ID*/
   houseNumber int,
   street text,
   city text,
