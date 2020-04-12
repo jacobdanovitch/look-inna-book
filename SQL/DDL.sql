@@ -1,6 +1,6 @@
 CREATE TABLE book ( /* Primary key (bookASIN,sellerID) */
-  bookASIN char(10) NOT NULL UNIQUE, /* ASIN are garunteed to be size 10*/
-  sellerID text NOT NULL UNIQUE,
+  bookASIN char(10), /* ASIN are garunteed to be size 10*/
+  sellerID text,
   authorName text, 
   bookTitle text,
   bookPublisher text,
@@ -16,32 +16,25 @@ CREATE TABLE book ( /* Primary key (bookASIN,sellerID) */
 CREATE TABLE seller( /* needs work for later*/
     sellerID text primary key, /* Created by application side*/
     userEmail text,
-    avatarURL text,
     fullName text
 );
 
-CREATE TABLE buyer( /* needs work for later*/
-    userID text primary key, /* Created by application side*/
-    userEmail text,
-    avatarURL text,
-    fullName text
-);
 
 
 
 CREATE TABLE book_order( /* Store multiple of these for each book in the order. Primary Key (ORDERID,BOOKASIN)*/ 
-    bookASIN char(10) NOT NULL UNIQUE,
+    bookASIN char(10),
     quantity integer,
-    orderID text NOT NULL UNIQUE,
-    userID text NOT NULL UNIQUE,
-    sellerID text NOT NULL UNIQUE, 
+    orderID text,
+    userID text,
+    sellerID text, 
   	primary key(bookASIN,sellerID,userID,orderID)
 );
 
 
 
 CREATE TABLE shipment(
-    orderID text references book_order(orderID) on delete cascade,
+    orderID text,
     trackingID text primary key
 );
 
@@ -61,14 +54,17 @@ CREATE TABLE PhoneNumber(
 
 
 CREATE TABLE payment_info(
-  creditCardNumber char(16) primary key,
+  creditCardNumber char(16),
   cvv char(3),
   expirationDate char(6), /* maybe look at date object*/
-  ownerUserID text /*Whoever actually owns the card*/
+  ownerUserID text, /*Whoever actually owns the card*/
+  primary key(creditCardNumber,ownerUserID)
+
+
 );
 
 
-CREATE TABLE address(
+CREATE TABLE residence(
   owner_id text primary key, /*Publisher/Seller/User ID*/
   houseNumber int,
   street text,
