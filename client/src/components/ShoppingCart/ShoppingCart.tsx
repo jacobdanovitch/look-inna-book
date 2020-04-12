@@ -1,32 +1,18 @@
 import React, { FunctionComponent } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { useQuery } from "@apollo/react-hooks";
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Media from 'react-bootstrap/Media';
+import {
+    Container, 
+    Row, 
+    Col, 
+    Button, 
+    ListGroup, 
+    Media 
+} from 'react-bootstrap' 
 
-import BookProps from '../../types/BookProps';
+import { TBookProps } from '../../types';
+import { getCart, updateCart, removeFromCart } from './CartUtils'
 
-export const getCart = () => JSON.parse(localStorage.getItem('cart') || '[]')
-
-export const updateCart = (item: BookProps) => {
-    let cart = getCart();
-    cart.push(item);
-    console.log(cart);
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-export const removeFromCart = (item: BookProps) => {
-    let cart = getCart().filter((x: BookProps) => x.asin !== item.asin);
-    console.log(cart);
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
-
-export const CartItem: FunctionComponent<BookProps> = (book) => {
+export const CartItem: FunctionComponent<TBookProps> = (book) => {
     return <ListGroup.Item>
         <Media>
             <img
@@ -42,7 +28,7 @@ export const CartItem: FunctionComponent<BookProps> = (book) => {
                     Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
                     ante sollicitudin commodo.
                 </p>
-                <Button 
+                <Button
                     variant="outline-danger"
                     onClick={() => {
                         removeFromCart(book);
@@ -56,20 +42,30 @@ export const CartItem: FunctionComponent<BookProps> = (book) => {
     </ListGroup.Item>
 }
 
-export const ShoppingCart: FunctionComponent<any> = () => {
-    const cart = getCart();
-    console.log(cart);
+type TCartList = { cart: Array<TBookProps> };
+export const CartList: FunctionComponent<TCartList> = ({ cart }) => {
+    return <ListGroup>
+        {cart.map(CartItem)}
+    </ListGroup>;
+}
 
+export const ShoppingCart: FunctionComponent = () => {
+    const cart = getCart();
     return <Container>
-        <h1>Your Cart</h1>
         <Row>
             <Col md="8">
-                <ListGroup>
-                    {cart.map(CartItem)}
-                </ListGroup>
+                <h1>Your Cart</h1>
             </Col>
             <Col>
-                <Button variant="warning">Proceed to Checkout</Button>
+                <Button variant="outline-danger">Clear cart</Button>
+            </Col>
+        </Row>
+        <Row>
+            <Col md="8">
+                <CartList cart={cart}/>
+            </Col>
+            <Col>
+                <a href="/checkout"><Button variant="warning">Proceed to Checkout</Button></a>
             </Col>
         </Row>
     </Container>

@@ -29,10 +29,7 @@ const BookAttributes = gql`fragment BookAttributes on Book {
     asin
   }`
 
-const BookSearchQuery = (where: object) => {
-    if(!where){
-        return null;
-    }
+export const BookSearchQuery = (where: object) => {
     let filterString = format(where);
     let query = gql`query BookSearchQuery {
         Book(where: ${filterString}, limit: 10) {
@@ -41,9 +38,6 @@ const BookSearchQuery = (where: object) => {
       }
       ${BookAttributes}
     `
-    // console.log(getGqlString(query));
     console.log(query);
     return query
 }
-
-export default BookSearchQuery;

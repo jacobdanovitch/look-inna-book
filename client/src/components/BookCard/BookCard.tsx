@@ -1,15 +1,15 @@
 import React, { FunctionComponent } from 'react';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Tooltip from 'react-bootstrap/Tooltip'
+import {
+    Card, 
+    Button, 
+    Tooltip, 
+    OverlayTrigger 
+} from 'react-bootstrap';
 
-import BookProps from '../../types/BookProps';
-import { updateCart } from '../ShoppingCart/ShoppingCart';
+import { TBookProps } from '../../types';
+import { updateCart } from '../ShoppingCart';
 
-function renderTooltip(book: BookProps) {
+function renderTooltip(book: TBookProps) {
     function innerTooltip(props: any){
         return (
             <Tooltip id="button-tooltip" {...props}>
@@ -25,7 +25,7 @@ function renderTooltip(book: BookProps) {
     return innerTooltip
 }
 
-const addToCartHover: FunctionComponent<any> = (book: BookProps) => (
+const addToCartHover: FunctionComponent<any> = (book: TBookProps) => (
     <OverlayTrigger
         placement="right"
         delay={{ show: 250, hide: 1200 }}
@@ -36,7 +36,7 @@ const addToCartHover: FunctionComponent<any> = (book: BookProps) => (
 );
 
 
-export const BookCard: FunctionComponent<BookProps> = (book) =>
+export const BookCard: FunctionComponent<TBookProps> = (book) =>
     <a href={`/book/${book.asin}`}>
         <Card style={{ width: '14rem' }} key={book.asin}>
             <Card.Img variant="top" src={book.image_url} />
