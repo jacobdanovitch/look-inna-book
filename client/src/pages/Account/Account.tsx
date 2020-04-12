@@ -30,7 +30,7 @@ export const Account: FunctionComponent<TAccountPage> = ({ useAuth, activeTab })
         </Tab.Pane>
     }
 
-    return authLoading ? null : <Tab.Container defaultActiveKey={activeTab || (!store ? "third": "first")}>
+    return (authLoading || loading ) ? null : <Tab.Container defaultActiveKey={activeTab || (store ? "first" : "third")}>
         <Row>
             <Col sm={3}>
                 <Nav className="flex-column">

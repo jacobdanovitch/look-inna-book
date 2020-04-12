@@ -26,7 +26,7 @@ export const FormField: FunctionComponent<TFormField> = ({ name, as, md, control
         const isInvalid = form.touched[field.name] && !isValid;
         const controlOpts = control || {};
         return (
-            <Form.Group as={as} md={md} controlId={controlId}>
+            <Form.Group as={as} md={md} controlId={controlId || `validationFormik-${name}`}>
                 <Form.Label>{label}</Form.Label>
                 <InputGroup>
                     {inputGroupPrepend}

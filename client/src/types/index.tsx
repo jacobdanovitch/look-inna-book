@@ -19,3 +19,4 @@ export type {
 export * from './AddressProps';
 export * from './AuthProps'
 export * from './BookProps'
+export * from './StoreInfo'

@@ -1,0 +1,1 @@
+export type TStoreInfo = {store: { store_id: string, store_name: string }}
