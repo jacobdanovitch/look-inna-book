@@ -1,16 +1,20 @@
 CREATE TABLE book ( /* Primary key (bookASIN,sellerID) */
-  bookASIN char(10), /* ASIN are garunteed to be size 10*/
-  sellerID text,
+  bookASIN char(10) primary key, /* ASIN are garunteed to be size 10*/
   authorName text, 
   bookTitle text,
   bookPublisher text,
   bookGenre text,
   bookPages integer,
   bookPrice numeric(6, 2),
-  percentageTaken numeric(3,2), /* Todo limit of 100 percent*/
-  inventory integer, -- # left in stock
-  primary key(bookASIN, sellerID)
+  percentageTaken numeric(3,2) /* Todo limit of 100 percent*/
 );
+
+CREATE TABLE book_seller_inventory( /* stores how much */
+  sellerID text, --foreign key
+  bookASIN char(10),
+  inventory integer,
+  primary key(sellerID,bookASIN)
+)
 
 
 CREATE TABLE seller( /* needs work for later*/
@@ -59,8 +63,6 @@ CREATE TABLE payment_info(
   expirationDate char(6), /* maybe look at date object*/
   ownerUserID text, /*Whoever actually owns the card*/
   primary key(creditCardNumber,ownerUserID)
-
-
 );
 
 
