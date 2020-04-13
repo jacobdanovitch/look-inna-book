@@ -23,28 +23,29 @@ CREATE TABLE book ( /* Primary key (bookASIN,sellerID) */
   bookPages integer,
   bookPrice numeric(6, 2),
   percentageTaken numeric(3,2), /* Todo limit of 100 percent*/
+  inventory integer,
   foreign key (bookPublisher) references publisher 
 );
 
 CREATE TABLE author(
-  authourName text primary key 
+  authourName text,
+  authorID text primary key 
 );
 
 
 
 CREATE TABLE author_book ( /* Allows for many to many relation between authors and books*/
-  authourName text,
+  authorID text,
   bookASIN char(10),
-  primary key(authourName,bookASIN),
-  foreign key (authourName) references author,
+  primary key(authorID,bookASIN),
+  foreign key (authorID) references author,
   foreign key (bookASIN) references book
 );
 
 
 CREATE TABLE buyer(
   userID text primary key,
-  full_name text,
-  email text
+  isAdmin boolean default FALSE
 );
 
 
@@ -52,6 +53,7 @@ CREATE TABLE buyer(
 CREATE TABLE user_order( /* These need to be stored like these in order for the database to be considered normalized... (Ties user to order)*/ 
     orderID text primary key,
     userID text,
+    timeOfOrder timestamp default NOW(),
     foreign key (userID) references buyer
 );
 
@@ -68,7 +70,9 @@ CREATE TABLE order_book( /* These need to be stored like these in order for the 
 CREATE TABLE shipment( /* These need to be stored like these in order for the database to be considered normalized... (Ties shipment to order)*/ 
     orderID text,
     trackingID text primary key,
-    foreign key (orderID) references user_order
+    house_id text, 
+    foreign key (orderID) references user_order,
+    foreign key (house_id) references residence
 );
 
 
@@ -106,3 +110,6 @@ CREATE TABLE PhoneNumber(
   bookPublisher text, /*The publisher owns the phone number*/
   foreign key (bookPublisher) references publisher
 );
+
+
+/* Automatically purchase new books*/
