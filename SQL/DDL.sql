@@ -9,37 +9,35 @@ CREATE TABLE book ( /* Primary key (bookASIN,sellerID) */
   percentageTaken numeric(3,2) /* Todo limit of 100 percent*/
 );
 
-CREATE TABLE book_seller_inventory( /* stores how much */
-  sellerID text, --foreign key
-  bookASIN char(10),
-  inventory integer,
-  primary key(sellerID,bookASIN)
-)
 
-
-CREATE TABLE seller( /* needs work for later*/
-    sellerID text primary key, /* Created by application side*/
-    userEmail text,
-    fullName text
+CREATE TABLE buyer(
+  userID text primary key,
+  full_name text,
+  email text
 );
 
 
 
-
-CREATE TABLE book_order( /* Store multiple of these for each book in the order. Primary Key (ORDERID,BOOKASIN)*/ 
-    bookASIN char(10),
-    quantity integer,
-    orderID text,
+CREATE TABLE user_order( /* Store multiple of these for each book in the order. Primary Key (ORDERID,BOOKASIN)*/ 
+    orderID text primary key,
     userID text,
-    sellerID text, 
-  	primary key(bookASIN,sellerID,userID,orderID)
+    foreign key (userID) references buyer
+);
+
+CREATE TABLE order_book(
+  orderID text,
+  bookASIN char(10),
+  quantity integer,
+  primary key(orderID,bookASIN),
+  foreign key (orderID) references user_order
 );
 
 
 
 CREATE TABLE shipment(
     orderID text,
-    trackingID text primary key
+    trackingID text primary key,
+    foreign key (orderID) references user_order
 );
 
 
@@ -57,11 +55,16 @@ CREATE TABLE PhoneNumber(
 );
 
 
-CREATE TABLE payment_info(
-  creditCardNumber char(16),
+CREATE TABLE credit_cards(
+  creditCardNumber char(16) primary key,
   cvv char(3),
-  expirationDate char(6), /* maybe look at date object*/
-  ownerUserID text, /*Whoever actually owns the card*/
+  expirationDate char(6) /* maybe look at date object*/
+);
+
+
+CREATE TABLE credit_cards_owner(
+  creditCardNumber char(16),
+  ownerUserID text,
   primary key(creditCardNumber,ownerUserID)
 );
 
