@@ -1,3 +1,20 @@
+CREATE TABLE residence( /* can tie to both and normalized properly but idk if jacob is gonna be okay with, bring up tommorow*/
+  house_id text primary key, 
+  houseNumber int,
+  street text,
+  city text,
+  province text,
+  country text,
+  postal_code text
+);
+
+CREATE TABLE publisher( /* Finished Assumed publisher only has one address..*/
+  publisher_name text primary key,
+  bankingInformation text,
+  residence_id text,
+  foreign key (residence_id) references residence
+);
+
 CREATE TABLE book ( /* Primary key (bookASIN,sellerID) */
   bookASIN char(10) primary key, /* ASIN are garunteed to be size 10*/
   bookTitle text,
@@ -5,7 +22,8 @@ CREATE TABLE book ( /* Primary key (bookASIN,sellerID) */
   bookGenre text,
   bookPages integer,
   bookPrice numeric(6, 2),
-  percentageTaken numeric(3,2) /* Todo limit of 100 percent*/
+  percentageTaken numeric(3,2), /* Todo limit of 100 percent*/
+  foreign key (bookPublisher) references publisher 
 );
 
 CREATE TABLE author(
@@ -55,13 +73,6 @@ CREATE TABLE shipment( /* These need to be stored like these in order for the da
 
 
 
-
-CREATE TABLE PhoneNumber(
-  PhoneNumber text primary key,
-  bookPublisher text /*Whoever owns the phone number*/
-);
-
-
 CREATE TABLE credit_cards(
   creditCardNumber char(16) primary key,
   cvv char(3),
@@ -78,17 +89,9 @@ CREATE TABLE credit_cards_owner( /* Many to many relation between credit cards a
 );
 
 
-CREATE TABLE residence( /* can tie to both and normalized properly but idk if jacob is gonna be okay with, bring up tommorow*/
-  house_id text primary key, 
-  houseNumber int,
-  street text,
-  city text,
-  province text,
-  country text,
-  postal_code text
-);
 
-CREATE TABLE buyer_residence(
+
+CREATE TABLE buyer_residence( /* Used for shipping to user? Did it in case...*/
   house_id text,
   userID text,
   primary key (house_id,userID),
@@ -96,9 +99,10 @@ CREATE TABLE buyer_residence(
   foreign key (userID) references buyer
 );
 
-CREATE TABLE publisher( /* Needs to be finished*/
-  bankingInformation text primary key,
-  bookPublisher text,
-  residence_id text,
-  foreign key (residence_id) references residence
+
+
+CREATE TABLE PhoneNumber(
+  PhoneNumber text primary key,
+  bookPublisher text, /*The publisher owns the phone number*/
+  foreign key (bookPublisher) references publisher
 );
