@@ -1,115 +1,120 @@
-CREATE TABLE residence( /* can tie to both and normalized properly but idk if jacob is gonna be okay with, bring up tommorow*/
-  house_id text primary key, 
-  houseNumber int,
+CREATE TABLE ResidentialAddress(
+  residenceID serial primary key, 
   street text,
   city text,
   province text,
   country text,
-  postal_code text
+  postalCode text
 );
 
-CREATE TABLE publisher( /* Finished Assumed publisher only has one address..*/
-  publisher_name text primary key,
+CREATE TABLE Publisher( /* Finished Assumed publisher only has one address..*/
+  publisherID serial primary key,
+  publisherName text,
   bankingInformation text,
-  residence_id text,
-  foreign key (residence_id) references residence
+  residenceID integer,
+
+  foreign key (residenceID) references ResidentialAddress
 );
 
-CREATE TABLE book ( /* Primary key (bookASIN,sellerID) */
-  bookASIN char(10) primary key, /* ASIN are garunteed to be size 10*/
-  bookTitle text,
-  bookPublisher text,
-  bookGenre text,
-  bookPages integer,
-  bookPrice numeric(6, 2),
-  percentageTaken numeric(3,2), /* Todo limit of 100 percent*/
+CREATE TABLE Book (
+  asin char(10) primary key, -- ASIN are guaranteed to be size 10
+  publisherID integer,
+  title text,
+  coverURL text DEFAULT NULL,
+  category text,
+  subCategory text,
+  pages integer,
+  price numeric(6, 2),
   inventory integer,
-  foreign key (bookPublisher) references publisher 
+  percentageTaken numeric(3,2) DEFAULT RANDOM(), /* Todo limit of 100 percent*/
+
+  foreign key (publisherID) references Publisher
 );
 
-CREATE TABLE author(
-  authourName text,
-  authorID text primary key 
-);
-
-
-
-CREATE TABLE author_book ( /* Allows for many to many relation between authors and books*/
-  authorID text,
-  bookASIN char(10),
-  primary key(authorID,bookASIN),
-  foreign key (authorID) references author,
-  foreign key (bookASIN) references book
+CREATE TABLE Author(
+  authorID serial primary key,
+  fullName text
 );
 
 
-CREATE TABLE buyer(
+
+CREATE TABLE authorBook ( /* Allows for many to many relation between authors and books*/
+  authorID integer,
+  asin char(10),
+
+  primary key(authorID, asin),
+
+  foreign key (authorID) references Author,
+  foreign key (asin) references Book
+);
+
+
+CREATE TABLE Customer (
   userID text primary key,
-  isAdmin boolean default FALSE
+  isAdmin boolean DEFAULT FALSE
 );
 
 
 
-CREATE TABLE user_order( /* These need to be stored like these in order for the database to be considered normalized... (Ties user to order)*/ 
+CREATE TABLE Purchase ( /* These need to be stored like these in order for the database to be considered normalized... (Ties user to order)*/ 
     orderID text primary key,
     userID text,
-    timeOfOrder timestamp default NOW(),
-    foreign key (userID) references buyer
+    orderTime timestamp DEFAULT NOW(),
+    foreign key (userID) references Customer
 );
 
-CREATE TABLE order_book( /* These need to be stored like these in order for the database to be considered normalized... (Ties purchased books to order)*/ 
+CREATE TABLE PurchasedItem ( /* These need to be stored like these in order for the database to be considered normalized... (Ties purchased books to order)*/ 
   orderID text,
-  bookASIN char(10),
+  asin char(10),
   quantity integer,
-  primary key(orderID,bookASIN),
-  foreign key (orderID) references user_order
+  primary key(orderID, asin),
+  foreign key (orderID) references Purchase
 );
 
 
 
-CREATE TABLE shipment( /* These need to be stored like these in order for the database to be considered normalized... (Ties shipment to order)*/ 
+CREATE TABLE Shipment ( /* These need to be stored like these in order for the database to be considered normalized... (Ties shipment to order)*/ 
     orderID text,
     trackingID text primary key,
-    house_id text, 
-    foreign key (orderID) references user_order,
-    foreign key (house_id) references residence
+    residenceID integer, 
+    foreign key (orderID) references Purchase,
+    foreign key (residenceID) references ResidentialAddress
 );
 
 
 
-CREATE TABLE credit_cards(
-  creditCardNumber char(16) primary key,
+CREATE TABLE PaymentMethod (
+  cardNumber char(16) primary key,
   cvv char(3),
-  expirationDate char(6) /* maybe look at date object*/
+  expirationDate date
 );
 
 
-CREATE TABLE credit_cards_owner( /* Many to many relation between credit cards and owner*/
-  ownerUserID text,
-  creditCardNumber char(16),
-  primary key(creditCardNumber,ownerUserID),
-  foreign key (creditCardNumber) references credit_cards,
-  foreign key (ownerUserID) references buyer
-);
-
-
-
-
-CREATE TABLE buyer_residence( /* Used for shipping to user? Did it in case...*/
-  house_id text,
+CREATE TABLE CardHolder ( -- Many to many relation between credit cards and owner
   userID text,
-  primary key (house_id,userID),
-  foreign key (house_id) references residence,
-  foreign key (userID) references buyer
+  cardNumber char(16),
+
+  primary key(cardNumber, userID),
+
+  foreign key (cardNumber) references PaymentMethod,
+  foreign key (userID) references Customer
 );
 
 
+CREATE TABLE Household ( -- Used for shipping to user? Did it in case...
+  residenceID integer,
+  userID text,
 
-CREATE TABLE PhoneNumber(
+  primary key (residenceID, userID),
+
+  foreign key (residenceID) references ResidentialAddress,
+  foreign key (userID) references Customer
+);
+
+
+CREATE TABLE PhoneNumber (
   PhoneNumber text primary key,
-  bookPublisher text, /*The publisher owns the phone number*/
-  foreign key (bookPublisher) references publisher
+  publisherID integer, -- The publisher owns the phone number
+
+  foreign key (publisherID) references Publisher
 );
-
-
-/* Automatically purchase new books*/
