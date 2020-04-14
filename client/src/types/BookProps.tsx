@@ -1,6 +1,4 @@
-import React from 'react';
-
-type BookProps = {
+export type TBookProps = {
     asin: string,
     title: string,
     author: string,
@@ -9,4 +7,3 @@ type BookProps = {
     category_id: string,
 };
 
-export default BookProps;

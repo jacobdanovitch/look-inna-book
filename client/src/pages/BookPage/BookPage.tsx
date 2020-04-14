@@ -2,19 +2,14 @@ import React, { FunctionComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { useQuery } from "@apollo/react-hooks";
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Image from 'react-bootstrap/Image';
-import Button from 'react-bootstrap/Button';
+import { Container, Row,  Col, Button, Image } from 'react-bootstrap';
 
-import BookPageQuery from '../../queries/BookPageQuery';
-import { LoadingView } from '../LoadingView/LoadingView';
+import { BookPageQuery } from '../../db/Queries';
+import { LoadingView } from '../../components';
 
-import { updateCart } from '../ShoppingCart/ShoppingCart';
+import { updateCart } from '../../components/ShoppingCart';
 
 interface TParams { asin: string };
-
 export const BookPage: FunctionComponent<RouteComponentProps<TParams>> = ({ match }: RouteComponentProps<TParams>) => {
     const { loading, error, data } = useQuery(BookPageQuery, { variables: { asin: match.params.asin } });
 

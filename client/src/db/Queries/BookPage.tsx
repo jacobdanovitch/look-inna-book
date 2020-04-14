@@ -10,14 +10,12 @@ const BookAttributes = gql`fragment BookAttributes on Book {
     asin
   }`
 
-const BookPageQuery = gql`query BookPageQuery($asin: String!) {
+export const BookPageQuery = gql`query BookPageQuery($asin: String!) {
   Book(where: {asin: {_eq: $asin}}, limit: 1) {
     ...BookAttributes
   }
 }
 ${BookAttributes}
 `
-
-export default BookPageQuery;
 
 
