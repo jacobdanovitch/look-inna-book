@@ -1,4 +1,8 @@
-CREATE TABLE ResidentialAddress(
+-- set schema
+CREATE SCHEMA IF NOT EXISTS final;
+SET search_path TO final; 
+
+CREATE TABLE IF NOT EXISTS ResidentialAddress(
   residenceID serial primary key, 
   street text,
   city text,
@@ -7,7 +11,7 @@ CREATE TABLE ResidentialAddress(
   postalCode text
 );
 
-CREATE TABLE Publisher( /* Finished Assumed publisher only has one address..*/
+CREATE TABLE IF NOT EXISTS Publisher( /* Finished Assumed publisher only has one address..*/
   publisherID serial primary key,
   publisherName text,
   bankingInformation text,
@@ -16,7 +20,7 @@ CREATE TABLE Publisher( /* Finished Assumed publisher only has one address..*/
   foreign key (residenceID) references ResidentialAddress
 );
 
-CREATE TABLE Book (
+CREATE TABLE IF NOT EXISTS Book (
   asin char(10) primary key, -- ASIN are guaranteed to be size 10
   publisherID integer,
   title text,
@@ -31,14 +35,13 @@ CREATE TABLE Book (
   foreign key (publisherID) references Publisher
 );
 
-CREATE TABLE Author(
+CREATE TABLE IF NOT EXISTS Author(
   authorID serial primary key,
   fullName text
 );
 
 
-
-CREATE TABLE authorBook ( /* Allows for many to many relation between authors and books*/
+CREATE TABLE IF NOT EXISTS WrittenBy ( /* Allows for many to many relation between authors and books*/
   authorID integer,
   asin char(10),
 
@@ -49,48 +52,19 @@ CREATE TABLE authorBook ( /* Allows for many to many relation between authors an
 );
 
 
-CREATE TABLE Customer (
+CREATE TABLE IF NOT EXISTS Customer (
   userID text primary key,
   isAdmin boolean DEFAULT FALSE
 );
 
-
-
-CREATE TABLE Purchase ( /* These need to be stored like these in order for the database to be considered normalized... (Ties user to order)*/ 
-    orderID text primary key,
-    userID text,
-    orderTime timestamp DEFAULT NOW(),
-    foreign key (userID) references Customer
-);
-
-CREATE TABLE PurchasedItem ( /* These need to be stored like these in order for the database to be considered normalized... (Ties purchased books to order)*/ 
-  orderID text,
-  asin char(10),
-  quantity integer,
-  primary key(orderID, asin),
-  foreign key (orderID) references Purchase
-);
-
-
-
-CREATE TABLE Shipment ( /* These need to be stored like these in order for the database to be considered normalized... (Ties shipment to order)*/ 
-    orderID text,
-    trackingID text primary key,
-    residenceID integer, 
-    foreign key (orderID) references Purchase,
-    foreign key (residenceID) references ResidentialAddress
-);
-
-
-
-CREATE TABLE PaymentMethod (
+CREATE TABLE IF NOT EXISTS PaymentMethod (
   cardNumber char(16) primary key,
   cvv char(3),
   expirationDate date
 );
 
 
-CREATE TABLE CardHolder ( -- Many to many relation between credit cards and owner
+CREATE TABLE IF NOT EXISTS CardHolder ( -- Many to many relation between credit cards and owner
   userID text,
   cardNumber char(16),
 
@@ -101,7 +75,37 @@ CREATE TABLE CardHolder ( -- Many to many relation between credit cards and owne
 );
 
 
-CREATE TABLE Household ( -- Used for shipping to user? Did it in case...
+CREATE TABLE IF NOT EXISTS Purchase (
+    orderID text primary key,
+    userID text,
+    cardNumber char(16),
+
+    orderTime timestamp DEFAULT NOW(),
+
+    foreign key (userID) references Customer
+    foreign key (cardNumber) references PaymentMethod
+);
+
+CREATE TABLE IF NOT EXISTS PurchasedItem ( /* These need to be stored like these in order for the database to be considered normalized... (Ties purchased books to order)*/ 
+  orderID text,
+  asin char(10),
+  quantity integer,
+  primary key(orderID, asin),
+  foreign key (orderID) references Purchase
+);
+
+CREATE TABLE IF NOT EXISTS Shipment ( /* These need to be stored like these in order for the database to be considered normalized... (Ties shipment to order)*/ 
+    trackingID text primary key,
+    orderID text,
+    residenceID integer, 
+    
+
+    foreign key (orderID) references Purchase,
+    foreign key (residenceID) references ResidentialAddress
+);
+
+
+CREATE TABLE IF NOT EXISTS Household ( -- Used for shipping to user? Did it in case...
   residenceID integer,
   userID text,
 
@@ -112,7 +116,7 @@ CREATE TABLE Household ( -- Used for shipping to user? Did it in case...
 );
 
 
-CREATE TABLE PhoneNumber (
+CREATE TABLE IF NOT EXISTS PhoneNumber (
   PhoneNumber text primary key,
   publisherID integer, -- The publisher owns the phone number
 

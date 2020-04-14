@@ -1,0 +1,4 @@
+psycopg
+sqlalchemy
+pandas
+tqdm
