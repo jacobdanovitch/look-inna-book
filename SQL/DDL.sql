@@ -70,8 +70,8 @@ CREATE TABLE IF NOT EXISTS CardHolder ( -- Many to many relation between credit 
 
   primary key(cardNumber, userID),
 
-  foreign key (cardNumber) references PaymentMethod,
   foreign key (userID) references Customer
+  foreign key (cardNumber) references PaymentMethod,
 );
 
 
