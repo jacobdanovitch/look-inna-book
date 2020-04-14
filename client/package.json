@@ -33,7 +33,8 @@
     "start": "HOST='' react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "codegen:generate": "apollo codegen:generate --excludes=node_modules/* --includes=**/*.tsx --endpoint http://look-inna-book-postgres-hasura.eastus.azurecontainer.io/v1/graphql --target typescript --tagName gql --outputFlat src/generated"
   },
   "eslintConfig": {
     "extends": "react-app"

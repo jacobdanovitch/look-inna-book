@@ -1,14 +1,5 @@
-import { gql, DocumentNode } from 'apollo-boost';
-
-
-const BookAttributes = gql`fragment BookAttributes on Book {
-    title
-    author
-    category
-    image_url
-    category_id
-    asin
-  }`
+import { gql } from 'apollo-boost';
+import { BookAttributes } from '../Fragments'
 
 export const BookPageQuery = gql`query BookPageQuery($asin: String!) {
   Book(where: {asin: {_eq: $asin}}, limit: 1) {

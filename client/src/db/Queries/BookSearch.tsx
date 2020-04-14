@@ -1,4 +1,5 @@
 import { gql, DocumentNode } from 'apollo-boost';
+import { BookAttributes } from '../Fragments'
 
 function getGqlString(doc: DocumentNode) {
     return doc.loc && doc.loc.source.body;
@@ -19,20 +20,10 @@ function format(obj: Record<string, any>)
     return str;
 }
 
-
-const BookAttributes = gql`fragment BookAttributes on Book {
-    title
-    author
-    category
-    image_url
-    category_id
-    asin
-  }`
-
 export const BookSearchQuery = (where: object) => {
     let filterString = format(where);
     let query = gql`query BookSearchQuery {
-        Book(where: ${filterString}, limit: 10) {
+        final_book(where: ${filterString}, limit: 10) {
             ...BookAttributes
         }
       }
