@@ -1,5 +1,2 @@
-import { SubmitOrderMutation } from './SubmitOrder'
-
-export {
-    SubmitOrderMutation
-}
+export * from './SubmitOrder'
+export * from './BookManagement'

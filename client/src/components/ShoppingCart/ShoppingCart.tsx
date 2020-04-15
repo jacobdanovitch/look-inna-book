@@ -1,51 +1,57 @@
 import React, { FunctionComponent } from 'react';
 
 import {
-    Container, 
-    Row, 
-    Col, 
-    Button, 
-    ListGroup, 
-    Media 
-} from 'react-bootstrap' 
+    Container,
+    Row,
+    Col,
+    Button,
+    ListGroup,
+    Media
+} from 'react-bootstrap'
 
-import { TBookProps } from '../../types';
-import { getCart, updateCart, removeFromCart } from './CartUtils'
+import { Final_Book } from '../../types';
+import { getCart, updateCart, removeFromCart, clearCart } from './CartUtils'
 
-export const CartItem: FunctionComponent<TBookProps> = (book) => {
+type TCartItem = { book: Final_Book, hideButton?: boolean}
+export const CartItem: FunctionComponent<TCartItem> = ({ book, hideButton }) => {
+    const authors = book.authors.map((x: any) => x.AuthoredBook.fullname).join(', ')
     return <ListGroup.Item>
         <Media>
             <img
                 width={128}
                 height={128}
                 className="mr-3"
-                src={book.image_url}
+                src={book.coverurl || '#'}
                 alt="Cover image of book"
             />
             <Media.Body>
-                <h5><a href={`/book/${book.asin}`}>{book.title}</a></h5>
-                <p>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                    ante sollicitudin commodo.
-                </p>
-                <Button
-                    variant="outline-danger"
-                    onClick={() => {
-                        removeFromCart(book);
-                        window.location.reload(false);
-                    }}
-                >
-                    Remove
-                </Button>
+                <h6><a href={`/book/${book.asin}`}>{book.title}</a></h6>
+                <p style={{ fontSize: "smaller" }}>{authors}</p>
+                <hr />
+                <div>
+                    <span>{book.price && `From ${book.price}`} {book.inventory && `| ${book.inventory} remaining`} </span>
+                    {!hideButton &&
+                        <Button
+                            variant="outline-danger"
+                            style={{ float: "right" }}
+                            onClick={() => {
+                                removeFromCart(book);
+                                window.location.reload(false);
+                            }}
+                        >
+                            Remove
+                        </Button>
+                    }
+                </div>
             </Media.Body>
         </Media>
     </ListGroup.Item>
 }
 
-type TCartList = { cart: Array<TBookProps> };
+type TCartList = { cart: Array<Final_Book> };
 export const CartList: FunctionComponent<TCartList> = ({ cart }) => {
     return <ListGroup>
-        {cart.map(CartItem)}
+        {cart.map((b: Final_Book) => <CartItem book={b}/>)}
     </ListGroup>;
 }
 
@@ -57,12 +63,15 @@ export const ShoppingCart: FunctionComponent = () => {
                 <h1>Your Cart</h1>
             </Col>
             <Col>
-                <Button variant="outline-danger">Clear cart</Button>
+                <Button variant="outline-danger" onClick={() => {
+                    clearCart();
+                    window.location.reload(false);
+                }}>Clear cart</Button>
             </Col>
         </Row>
         <Row>
             <Col md="8">
-                <CartList cart={cart}/>
+                <CartList cart={cart} />
             </Col>
             <Col>
                 <a href="/checkout"><Button variant="warning">Proceed to Checkout</Button></a>

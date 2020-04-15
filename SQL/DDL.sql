@@ -4,6 +4,8 @@ SET search_path TO final;
 
 CREATE TABLE IF NOT EXISTS ResidentialAddress(
   residenceID serial primary key, 
+  firstname text,
+  lastname text,
   street text,
   city text,
   province text,

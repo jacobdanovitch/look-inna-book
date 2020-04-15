@@ -1,6 +1,6 @@
 // following: https://codesandbox.io/s/react-bootstrap-formik-pb831?from-embed=&file=/src/form-field.js:0-1167
 
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, SyntheticEvent } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { Field } from "formik";
 
@@ -16,11 +16,12 @@ export type TFormField = {
     children?: any,
     control?: any
     ref?: any,
-    autocomplete?: string
+    autocomplete?: string,
+    onChange?: ( e: SyntheticEvent ) => void;
 }
 type TFormRender = { field: any, form: any }
 
-export const FormField: FunctionComponent<TFormField> = ({ name, as, md, controlId, label, type, inputGroupPrepend, children, control, autocomplete }) => {
+export const FormField: FunctionComponent<TFormField> = ({ name, as, md, controlId, label, type, inputGroupPrepend, children, control, onChange, autocomplete }) => {
     const renderField: FunctionComponent<TFormRender> = ({ field, form }) => {
         const isValid = form.touched[field.name] && !form.errors[field.name];
         const isInvalid = form.touched[field.name] && !isValid;
@@ -33,6 +34,7 @@ export const FormField: FunctionComponent<TFormField> = ({ name, as, md, control
                     <Form.Control
                         {...field}
                         type={type}
+                        onChange={onChange}
                         isValid={isValid}
                         isInvalid={isInvalid}
                         feedback={form.errors[field.name]}

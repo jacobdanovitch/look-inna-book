@@ -20,3 +20,5 @@ export * from './AddressProps';
 export * from './AuthProps'
 export * from './BookProps'
 export * from './StoreInfo'
+export * from './generated/hasuraTypes'
+// export * from './generated/localTypes'

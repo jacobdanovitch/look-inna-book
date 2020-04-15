@@ -4,29 +4,26 @@ import { Col, Form } from "react-bootstrap";
 import { FormTextField, FormSelectField } from "..";
 import { TSection } from './AddressForm'
 
-export const ShippingSection: FunctionComponent<TSection> = ( { startingID } ) => {
-    const incrementID = () => {
-        return startingID()
-    }
+export const ShippingSection: FunctionComponent<TSection> = ( { onChange } ) => {
     return <>
         <Col>
             <Form.Row>
               <FormTextField
                 as={Col}
                 sm={4}
-                controlId={`validationFormik0${incrementID()}`}
                 label="First name"
                 type="text"
-                name="firstName"
+                name="firstname"
+                onChange={onChange}
               />
 
               <FormTextField
                 as={Col}
                 sm={4}
-                controlId={`validationFormik0${incrementID()}`}
                 label="Last name"
                 type="text"
-                name="lastName"
+                name="lastname"
+                onChange={onChange}
               />
             </Form.Row>
           </Col>
@@ -36,47 +33,42 @@ export const ShippingSection: FunctionComponent<TSection> = ( { startingID } ) =
               <FormTextField
                 as={Col}
                 sm={4}
-                controlId={`validationFormik0${incrementID()}`}
                 label="Street"
                 type="text"
                 name="street"
                 autocomplete="street-address"
+                onChange={onChange}
               />
 
 
               <FormTextField
                 as={Col}
                 md="4"
-                controlId={`validationFormik0${incrementID()}`}
                 label="Postal Code"
                 type="text"
-                name="postalCode"
+                name="postalcode"
+                onChange={onChange}
               />
             </Form.Row>
           </Col>
           <Col>
             <Form.Row>
-              <FormSelectField
+              <FormTextField
                 as={Col}
                 sm="4"
-                controlId={`validationFormik0${incrementID()}`}
                 label="City"
                 type="text"
                 name="city"
-              >
-                <option value="">Select a city</option>
-                <option>Toronto</option>
-                <option>Markham</option>
-                <option>Mississauga</option>
-              </FormSelectField>
+                onChange={onChange}
+              />
 
               <FormSelectField
                 as={Col}
                 sm="4"
-                controlId={`validationFormik0${incrementID()}`}
                 label="Province"
                 type="text"
                 name="province"
+                onChange={onChange}
               >
                 <option value="">Select a state</option>
                 <option>ON</option>
@@ -88,10 +80,10 @@ export const ShippingSection: FunctionComponent<TSection> = ( { startingID } ) =
               <FormTextField
                 as={Col}
                 md="4"
-                controlId={`validationFormik0${incrementID()}`}
                 label="Country"
                 type="text"
                 name="country"
+                onChange={onChange}
               />
             </Form.Row>
           </Col>

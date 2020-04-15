@@ -16,7 +16,7 @@ export const SiteNavbar: FunctionComponent<TUseAuth> = ({useAuth}) => {
     const [query, setQuery] = React.useState('');
     const [field, setField] = React.useState('title');
 
-    const fieldData = dataMaybeReady(useQuery(ObjectFieldQuery, { variables: { name: 'Book' } }));
+    const fieldData = dataMaybeReady(useQuery(ObjectFieldQuery, { variables: { name: 'final_book' } }));
     const options = fieldData.options;
 
     const user_id = user ? user.id : '';

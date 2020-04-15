@@ -1,12 +1,12 @@
-import React, { FunctionComponent, useState } from "react";
-import { useMutation } from '@apollo/react-hooks';
+import React, { FunctionComponent, useState, useRef } from "react";
+import { useQuery } from '@apollo/react-hooks';
 import { Formik } from "formik";
 import * as yup from "yup";
 import { Button, Col, Form } from "react-bootstrap";
 
 import { TSubmitCallback } from '../../types';
-import { LoadingView } from '..';
-import { FormTextField, FormSelectField } from "..";
+import { BookPageQuery } from '../../db'
+import { LoadingView, FormTextField, FormSelectField } from "..";
 
 const schema = yup.object({
     firstName: yup.string().required(),
@@ -18,41 +18,35 @@ const schema = yup.object({
 });
 
 // validationSchema={schema}
+export const SELLER_ACTION_OPTIONS = { UPDATE: "Add / Update", REMOVE: "Delete" }
 export const SellerForm: FunctionComponent<TSubmitCallback> = ({ onSubmit }) => {
-    /*
-    const { loading, error, data } = useQuery(LastUsedInfoQuery, { variables: { user_id } });
+    const [ asin, setAsin ] = useState('')
+    const asinRef = useRef(asin)
+    const { loading, error, data } = useQuery(BookPageQuery, { variables: { asin } } );
+
+    if(loading){
+        return LoadingView(loading);
+    }
+
+    const book = (data && data.final_book && data.final_book[0]) ? data.final_book[0] : { price: null, inventory: null }
+
+    console.log(book);
+    const { price, inventory } = book
     
-    const countRef = useRef(0);
-    const incrementID = () => {
-      countRef.current  = countRef.current+1
-      return countRef.current;
+    const { UPDATE, REMOVE } = SELLER_ACTION_OPTIONS
+    const initialValues = { action: UPDATE, ...book }
+
+    const setCurrentAsin = ( e: any ) => {
+        asinRef.current = e.target.value
     }
-  
-    if(loading || (!user_id)){
-      return LoadingView(loading);
-    }
-    if(error){
-      return <p>An error occurred</p>
-    }
-  
-    const { ShippingAddress, PaymentInfo } = data
-    const lastAddress = ShippingAddress[0] || {
-      firstName: "Jacob",
-      lastName: "Danovitch",
-      city: undefined,
-      province: "ON",
-      country: "Canada",
-      postalCode: ""
-    }
-    */
-    const [ADD, REMOVE, UPDATE] = ["Add inventory", "Remove Inventory", "Update Item"]
-    const initialValues = {action: ADD}
+
+    console.log(initialValues)
 
     return <Formik
         onSubmit={onSubmit}
         initialValues={initialValues}
     >
-        {({ handleSubmit, handleChange, values, errors, isValid, isSubmitting }) => (
+        {({ handleSubmit, handleChange, values, errors, isValid, isSubmitting, setSubmitting }) => (
             <Form noValidate onSubmit={handleSubmit}>
                 <Col>
                     <Form.Row>
@@ -63,22 +57,12 @@ export const SellerForm: FunctionComponent<TSubmitCallback> = ({ onSubmit }) => 
                             label="ASIN"
                             type="text"
                             name="asin"
+                            onChange={(e) => {
+                                setCurrentAsin(e)
+                                handleChange(e)
+                            }}
                         />
 
-                        <FormSelectField
-                            as={Col}
-                            sm={2}
-                            md={4}
-                            label="Action"
-                            type="text"
-                            name="action"
-                        >
-                            <option>{ADD}</option>
-                            <option>{REMOVE}</option>
-                            <option>{UPDATE}</option>
-                        </FormSelectField>
-                    </Form.Row>
-                    <Form.Row>
                         <FormTextField
                             as={Col}
                             sm={2}
@@ -86,25 +70,31 @@ export const SellerForm: FunctionComponent<TSubmitCallback> = ({ onSubmit }) => 
                             label="Price"
                             type="number"
                             name="price"
+                            onChange={handleChange}
                         />
-
+                    </Form.Row>
+                    <Form.Row>
                         <FormTextField
                             as={Col}
                             sm={2}
                             md={3}
-                            label="Quantity"
+                            label="Inventory"
                             type="number"
                             name="inventory"
+                            onChange={handleChange}
                         />
-
-                        <FormTextField
+                        <FormSelectField
                             as={Col}
                             sm={2}
-                            md={3}
-                            label="Warehouse ID"
-                            type="number"
-                            name="warehouse_id"
-                        />
+                            md={4}
+                            label="Action"
+                            type="text"
+                            name="action"
+                            onChange={handleChange}
+                        >
+                            <option>{REMOVE}</option>
+                            <option>{UPDATE}</option>
+                        </FormSelectField>
                     </Form.Row>
                 </Col>
 
@@ -112,12 +102,26 @@ export const SellerForm: FunctionComponent<TSubmitCallback> = ({ onSubmit }) => 
 
                 <Col>
                     <Button
-                        disabled={!isValid}
+                        disabled={!!book && !isValid}
                         variant="outline-success"
                         size="lg"
                         type="submit"
                     >
                         Submit
+                    </Button>
+
+                    <Button
+                        disabled={!isValid}
+                        variant="outline-info"
+                        size="lg"
+                        type="submit"
+                        onClick={(e: any) => {
+                            setSubmitting(false);
+                            e.preventDefault();
+                            setAsin(asinRef.current);
+                        }}
+                    >
+                        Refresh Info
                     </Button>
                 </Col>
             </Form>

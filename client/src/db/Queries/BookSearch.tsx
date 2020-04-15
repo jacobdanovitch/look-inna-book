@@ -29,6 +29,5 @@ export const BookSearchQuery = (where: object) => {
       }
       ${BookAttributes}
     `
-    console.log(query);
     return query
 }

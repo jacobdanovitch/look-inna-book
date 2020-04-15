@@ -21,68 +21,64 @@ const schema = yup.object({
   save: yup.bool()
 });
 
-export type TSection = { startingID: () => number } // (x: number) => void
+const parseCheckoutData = (data: any) => {
+  console.log(data);
+  const { households, cardholders } = data.final_customer[0]
+  console.log({ households, cardholders })
+  const card = cardholders[0] && cardholders[0].paymentmethod;
+  const address = households[0] && households[0].residentialaddress
+
+  console.log({ card, address })
+
+  return { card, address }
+}
+
+export type TSection = { onChange: (e: any) => void }
 
 // validationSchema={schema}
 export const AddressForm: FunctionComponent<TSubmitCallback & TAuthorizationView> = ({ onSubmit, user }) => {
   const user_id = user ? user.id : ''
   const { loading, error, data } = useQuery(LastUsedInfoQuery, { variables: { user_id } });
-  
-  const countRef = useRef(0);
-  const incrementID = () => {
-    countRef.current  = countRef.current+1
-    return countRef.current;
-  }
 
-  if(loading || (!user_id)){
+  if (loading || (!user_id)) {
     return LoadingView(loading);
   }
-  if(error){
-    return <p>An error occurred</p>
+  if (error) {
+    return <p>An error occurred: {JSON.stringify(error)}</p>
   }
 
-  const { ShippingAddress, PaymentInfo } = data
-  const lastAddress = ShippingAddress[0] || {
-    firstName: "Jacob",
-    lastName: "Danovitch",
-    city: undefined,
-    province: "ON",
-    country: "Canada",
-    postalCode: ""
-  }
+  console.log(data)
+  const { card, address } = parseCheckoutData(data);
+
 
   // https://stackoverflow.com/a/48087112/6766123
   const randomCC = (length: number) => Array(length).fill(0).map(() => Math.random().toString(36).charAt(2)).join('')
-  const lastPayment = PaymentInfo[0] || {creditCardNumber: randomCC(16), expirationDate: "2020-04-12", cvv: "123" }
-  const initialValues = {...lastAddress, ...lastPayment}
+  const lastPayment = card || { cardnumber: randomCC(16), expirationdate: "2020-04-12", cvv: "123" }
+  const initialValues = {...address, ...lastPayment}
 
-  const page = <Formik
+  return <Formik
     onSubmit={onSubmit}
     initialValues={initialValues}
   >
-    {({ handleSubmit, handleChange, values, errors, isValid, isSubmitting}) => (
-        <Form noValidate onSubmit={handleSubmit}>
-          <ShippingSection startingID={incrementID}/>
+    {({ handleSubmit, handleChange, values, errors, isValid }) => {
+      return <Form noValidate onSubmit={handleSubmit}>
+        <ShippingSection onChange={handleChange} />
+        <PaymentSection onChange={handleChange} />
 
-          <PaymentSection startingID={incrementID}/>
+        <br /><br />
 
-          <br /><br />
-
-          <Col>
-            <Button
-              disabled={!isValid}
-              variant="success"
-              size="lg"
-              type="submit"
-            >
-              Place Order
+        <Col>
+          <Button
+            disabled={!isValid}
+            variant="success"
+            size="lg"
+            type="submit"
+          >
+            Place Order
             </Button>
-          </Col>
-        </Form>
-      )}
+        </Col>
+      </Form>
+    }}
   </Formik>
-
-  countRef.current = 0;
-  return page;
 }
 //  || isSubmitting

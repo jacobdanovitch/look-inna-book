@@ -12,7 +12,7 @@ type DynamicGridProps = {
 
 export const DynamicGrid: FunctionComponent<DynamicGridProps> = ({arr, itemsPerCol, component}) => {
     if(!arr){
-        return <React.Fragment>An error occurred</React.Fragment>
+        return <>No results found</>
     }
     const rows = Array(Math.ceil(arr.length / itemsPerCol)).fill(null)
     return <Container fluid>

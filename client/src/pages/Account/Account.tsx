@@ -9,7 +9,7 @@ import { StoreManagement, Reports } from '.';
 
 type TAccountPage = TUseAuth & { activeTab?: string }
 export const Account: FunctionComponent<TAccountPage> = ({ useAuth, activeTab }) => {
-    const { loading: authLoading, user, auth } = useAuth();
+    const { loading: authLoading, user} = useAuth();
     const user_id = user ? user.id : '';
 
     const { loading, error, data } = useQuery(StoreInfoQuery, { variables: { user_id } })
@@ -29,6 +29,8 @@ export const Account: FunctionComponent<TAccountPage> = ({ useAuth, activeTab })
             {children}
         </Tab.Pane>
     }
+
+    activeTab = activeTab || 'reports';
 
     return (authLoading || loading ) ? null : <Tab.Container defaultActiveKey={activeTab || (store ? "first" : "third")}>
         <Row>
@@ -54,7 +56,7 @@ export const Account: FunctionComponent<TAccountPage> = ({ useAuth, activeTab })
                         <StoreManagement store={store} />
                     </AccountContentItem>
                     <AccountContentItem eventKey="second" sellerOnly>
-                        <Reports store={store} />
+                        <Reports />
                     </AccountContentItem>
                     <AccountContentItem eventKey="third">
                         Account Details

@@ -16,18 +16,19 @@ export const BookPage: FunctionComponent<RouteComponentProps<TParams>> = ({ matc
     if (loading) return LoadingView(loading);
     if (error) return <div>A GraphQL error occurred! {JSON.stringify(error)}</div>;
 
-    const book = data.Book[0]
-
+    const book = data.final_book[0]
     console.log(book)
+
+    const authors = book.authors.map((x: any) => x.AuthoredBook.fullname).join(', ')
 
     return <Container>
         <Row>
             <Col>
-                <Image src={book.image_url} thumbnail/>
+                <Image src={book.coverurl} thumbnail/>
             </Col>
             <Col>
                 <h2>{book.title}</h2>
-                <h5>By {book.author} under {book.category}</h5>
+                <h5>By {authors} under {book.category}</h5>
             </Col>
             <Col>
                 <Button 
@@ -39,9 +40,6 @@ export const BookPage: FunctionComponent<RouteComponentProps<TParams>> = ({ matc
             </Col>
         </Row>
         <Row>
-            <Col>1 of 3</Col>
-            <Col>2 of 3</Col>
-            <Col>3 of 3</Col>
         </Row>
     </Container>
 }
