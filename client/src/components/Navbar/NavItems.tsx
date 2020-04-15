@@ -14,7 +14,7 @@ import { TAuthorizationView } from '../../types/AuthProps'
 import { sortDropdownOptions, cartUrl, logoUrl, searchUrl } from './NavUtils'
 
 export const BrandLogo: FunctionComponent = () => <a href="/">
-    <Image src={logoUrl} rounded style={{ width: '50%', transform: 'scale(2.25)', marginLeft: '0.75em' }} />
+    <Image src={logoUrl} rounded style={{ width: '50%',  }} />
 </a>
 
 export const SearchField = (options: object[], field: string, onChange: (x: any) => void) => <Form.Control as="select"

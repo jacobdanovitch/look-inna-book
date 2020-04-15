@@ -23,7 +23,7 @@ function format(obj: Record<string, any>)
 export const BookSearchQuery = (where: object) => {
     let filterString = format(where);
     let query = gql`query BookSearchQuery {
-        final_book(where: ${filterString}, limit: 10) {
+        final_book(where: ${filterString}, limit: 100) {
             ...BookAttributes
         }
       }

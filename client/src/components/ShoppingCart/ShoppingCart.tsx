@@ -26,10 +26,10 @@ export const CartItem: FunctionComponent<TCartItem> = ({ book, hideButton }) => 
             />
             <Media.Body>
                 <h6><a href={`/book/${book.asin}`}>{book.title}</a></h6>
-                <p style={{ fontSize: "smaller" }}>{authors}</p>
+                <p style={{ fontSize: "smaller" }}>{authors} | {book.pages} </p>
                 <hr />
                 <div>
-                    <span>{book.price && `From ${book.price}`} {book.inventory && `| ${book.inventory} remaining`} </span>
+                    <span>{book.price && `From $${book.price}`} {book.inventory && `| ${book.inventory} remaining`} </span>
                     {!hideButton &&
                         <Button
                             variant="outline-danger"

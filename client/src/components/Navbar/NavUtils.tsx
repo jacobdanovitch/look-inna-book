@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const logoUrl = "https://image.flaticon.com/icons/png/128/39/39237.png";
+export const logoUrl = "https://www.freeiconspng.com/uploads/open-book-icon-17.png" // "https://image.flaticon.com/icons/png/128/39/39237.png";
 export const cartUrl = "https://pngimage.net/wp-content/uploads/2018/06/shopping-basket-icon-png-.png";
 export const searchUrl = "https://www.stickpng.com/assets/images/585e4ad1cb11b227491c3391.png";
 
